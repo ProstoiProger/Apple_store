@@ -1,0 +1,30 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mymongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mymongo-data:/data/db
+    networks:
+      - mynetwork
+
+  fastapi:
+    build: .
+    container_name: fastapi
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mongodb
+    networks:
+      - mynetwork
+    environment:
+      - MONGODB_URI=mongodb://mymongo:27017
+
+volumes:
+  mymongo-data:
+
+networks:
+  mynetwork:
+    driver: bridge
